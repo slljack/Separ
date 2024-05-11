@@ -1,0 +1,12 @@
+{
+  "items": [
+    {
+      "targets" : ["worker"],
+      "threshold": 100
+    },
+    {
+      "targets" : ["platform","requester"],
+      "threshold": 100
+    }
+  ]
+}

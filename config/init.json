@@ -1,0 +1,6 @@
+{
+  "RegistrationAuthorityIp": "127.0.0.1",
+  "RegistrationAuthorityPort": 18000,
+  "PacemakerPort": 20000,
+  "EntityPorts": 21000
+}

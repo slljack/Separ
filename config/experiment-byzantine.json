@@ -1,0 +1,21 @@
+{
+  "mode": "byzantine",
+  "tokenThreads": 6,
+  "crossPlatformPercent": 20,
+  "nodesPerShard": 4,
+  "faultyCount": 1,
+  "requestIntervalMs": 100,
+  "requestCount": 80,
+  "entities": {
+    "worker": 4,
+    "platform": 3,
+    "requester": 1,
+    "node": 12
+  },
+  "workerPlatforms": [
+    [0, 1],
+    [1, 2],
+    [0, 2],
+    [0, 1, 2]
+  ]
+}

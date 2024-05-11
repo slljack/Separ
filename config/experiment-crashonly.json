@@ -1,0 +1,21 @@
+{
+  "mode": "crashOnly",
+  "tokenThreads": 6,
+  "crossPlatformPercent": 20,
+  "nodesPerShard": 3,
+  "faultyCount": 1,
+  "requestIntervalMs": 100,
+  "requestCount": 80,
+  "entities": {
+    "worker": 4,
+    "platform": 4,
+    "requester": 1,
+    "node": 12
+  },
+  "workerPlatforms": [
+    [0, 1, 2],
+    [1, 2, 3],
+    [0, 2, 3],
+    [0, 1, 3]
+  ]
+}

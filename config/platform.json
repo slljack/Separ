@@ -1,0 +1,8 @@
+{
+  "queueTimeoutMs": 80,
+  "queueSize": 200,
+  "acceptTimeoutMs": 1200,
+  "commitTimeoutMs": 1800,
+  "maxReproposeDelayMs": 150,
+  "requiredContribution": 1
+}
