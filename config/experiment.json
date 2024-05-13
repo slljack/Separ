@@ -1,5 +1,5 @@
 {
-  "mode": "byzantine",
+  "mode": "tokenOnly",
   "tokenThreads": 6,
   "crossPlatformPercent": 20,
   "nodesPerShard": 4,
