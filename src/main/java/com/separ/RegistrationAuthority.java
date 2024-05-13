@@ -53,6 +53,8 @@ public class RegistrationAuthority extends StateMachineRunner {
         constraints = new ArrayList<Constraint>();
         tokens = new HashMap<Integer, List<Token>>();
 
+
+
         StateTracker.addStateListener(this::stateChanged);
         ConfigData.loadConfig("ra");
         ConfigData.loadConfig("constraints");
@@ -185,6 +187,8 @@ public class RegistrationAuthority extends StateMachineRunner {
         printer.info(Printer.entityMapToString(EntityManager.getEntityMap()));
 
         var entities = EntityManager.getAll();
+
+
         for (var entity : entities) {
             pacemaker.call(entity.type(), entity.getId(), "config");
         }
@@ -198,6 +202,16 @@ public class RegistrationAuthority extends StateMachineRunner {
 
         var constraintMessage = new ConstraintMessage(constraints);
         NetUtils.write(allChannel, constraintMessage);
+
+//        if (!ConfigData.getBoolean("experiment.privacyPreservingEnabled")) {
+//            // Configuration without privacy mechanisms
+////            for (var entity : entities) {
+////                pacemaker.call(entity.type(), entity.getId(), "config");
+////            }
+//            printer.info("Basic configuration completed without privacy features.");
+//            setState("connect"); // Move to next state without executing privacy-specific code
+//            return;
+//        }
 
         generateTokens(EntityManager.getEntityMap());
 

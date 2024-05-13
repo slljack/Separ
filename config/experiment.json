@@ -5,7 +5,7 @@
   "nodesPerShard": 4,
   "faultyCount": 1,
   "requestIntervalMs": 100,
-  "requestCount": 80,
+  "requestCount": 500,
   "entities": {
     "worker": 4,
     "platform": 3,

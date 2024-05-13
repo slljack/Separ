@@ -20,18 +20,17 @@ public class Token {
 
     private int id;
 
-    private PrivateKey privateKey;
+   // private PrivateKey privateKey;
     private PublicKey publicKey;
 
     private static Random random = new Random(); // Used in RA
 
     public Token() {
-
     }
 
     public Token(Token other) {
         this.id = other.id;
-        this.privateKey = other.privateKey;
+    //    this.privateKey = other.privateKey;
         this.publicKey = other.publicKey;
     }
 
@@ -44,8 +43,8 @@ public class Token {
         var nonce = new byte[16];
         random.nextBytes(nonce);
 
-        token.publicKey = new PublicKey(nonce, timestamp);
-        token.privateKey = new PrivateKey(nonce, timestamp, participants);
+        token.publicKey = new PublicKey(nonce, timestamp, participants);
+     //   token.privateKey = new PrivateKey(nonce, timestamp, participants);
 
         return token;
     }
@@ -58,13 +57,13 @@ public class Token {
         this.id = id;
     }
 
-    public PrivateKey getPrivateKey() {
-        return privateKey;
-    }
+    //public PrivateKey getPrivateKey() {
+       // return privateKey;
+  //  }
 
-    public void setPrivateKey(PrivateKey privateKey) {
-        this.privateKey = privateKey;
-    }
+    //public void setPrivateKey(PrivateKey privateKey) {
+        //this.privateKey = privateKey;
+//    }
 
     public PublicKey getPublicKey() {
         return publicKey;
@@ -75,12 +74,12 @@ public class Token {
     }
 
     boolean matches(Transaction transaction) {
-        if (privateKey == null) {
-            return false;
-        }
+//        if (privateKey == null) {
+//            return false;
+//        }
 
         var participants = transaction.getParticipants();
-        var tokenParticipants = privateKey.getParticipants();
+        var tokenParticipants = publicKey.getParticipants();
 
         var workerFound = false;
 
@@ -109,7 +108,7 @@ public class Token {
     }
 
     boolean isParticipant(EntityInfo entity) {
-        var participants = privateKey.getParticipants();
+        var participants = publicKey.getParticipants();
         return participants.containsKey(entity.type()) && participants.get(entity.type()) == entity.getId();
     }
 
@@ -118,7 +117,8 @@ public class Token {
             return false;
         }
 
-        var targets = privateKey.getParticipants().keySet();
+        var targets =
+                publicKey.getParticipants().keySet();
         if (targets.contains(EntityType.WORKER)) {
             return entity.type() == EntityType.WORKER;
         }
@@ -131,6 +131,7 @@ public class Token {
     }
 
     public byte[] getBytes(boolean includePrivateKey) {
+        includePrivateKey = false;
         var bytestream = new ByteArrayOutputStream();
         var outstream = new DataOutputStream(bytestream);
         try {
@@ -141,13 +142,13 @@ public class Token {
             outstream.write(publicBytes);
 
             if (includePrivateKey) {
-                if (privateKey == null) {
-                    outstream.writeInt(0);
-                } else {
-                    var privateBytes = privateKey.getBytes(true);
-                    outstream.writeInt(privateBytes.length);
-                    outstream.write(privateBytes);
-                }
+//                if (privateKey == null) {
+//                    outstream.writeInt(0);
+//                } else {
+//                    var privateBytes = privateKey.getBytes(true);
+//                    outstream.writeInt(privateBytes.length);
+//                    outstream.write(privateBytes);
+//                }
             }
 
             return bytestream.toByteArray();
@@ -159,7 +160,7 @@ public class Token {
     }
 
     public void fromBytes(byte[] data, boolean includePrivateKey) {
-
+        includePrivateKey = false;
         var bytestream = new ByteArrayInputStream(data);
         var instream = new DataInputStream(bytestream);
         try {
@@ -171,16 +172,16 @@ public class Token {
             publicKey = new PublicKey();
             publicKey.fromBytes(publicBytes, true);
 
-            if (includePrivateKey) {
-                var privateLen = instream.readInt();
-                if (privateLen > 0) {
-                    var privateBytes = new byte[privateLen];
-                    instream.read(privateBytes);
-                    privateKey = new PrivateKey();
-                    privateKey.fromBytes(privateBytes, true);
-
-                }
-            }
+//            if (includePrivateKey) {
+////                var privateLen = instream.readInt();
+////                if (privateLen > 0) {
+////                    var privateBytes = new byte[privateLen];
+////                    instream.read(privateBytes);
+////                    privateKey = new PrivateKey();
+////                    privateKey.fromBytes(privateBytes, true);
+//
+//                }
+//            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -188,21 +189,21 @@ public class Token {
 
     @Override
     public String toString() {
-        if (privateKey == null) {
+        //if (privateKey == null) {
             return "Token #" + id + " (PublicKey=" + publicKey + ")";
 
-        } else {
-            return "Token #" + id + " (PrivateKey=" + privateKey + ", PublicKey=" + publicKey + ")";
-        }
+       // } else {
+        //    return "Token #" + id + " (PrivateKey=" + privateKey + ", PublicKey=" + publicKey + ")";
+       // }
     }
 
     public String toString(boolean summarized) {
         if (summarized) {
             var str = "Token #" + id + " (nonce=" + Printer.bytesToString(publicKey.nonce) + ", t="
                     + publicKey.timestamp;
-            if (privateKey != null) {
-                str += ", participants=" + Printer.entitiesToString(privateKey.getParticipants());
-            }
+           // if (privateKey != null) {
+                str += ", participants=" + Printer.entitiesToString(publicKey.getParticipants());
+            //}
 
             str += ")";
             return str;
@@ -211,10 +212,11 @@ public class Token {
         }
     }
 
-    private static class PublicKey {
+    public static class PublicKey {
         private byte[] nonce;
         private long timestamp;
         private byte[] signature;
+        private Map<EntityType, Integer> participants;
 
         public PublicKey() {
 
@@ -226,6 +228,19 @@ public class Token {
 
             var bytes = getBytes(false);
             signature = CryptoUtils.sign(bytes, RACryptoUtils.getSignaturePrivateKey());
+        }
+
+        public PublicKey(byte[] nonce, long timestamp, Map<EntityType, Integer> participants) {
+            this.nonce = nonce;
+            this.timestamp = timestamp;
+            this.participants = participants;
+
+            var bytes = getBytes(false);
+            signature = CryptoUtils.sign(bytes, RACryptoUtils.getSignaturePrivateKey());
+        }
+
+        public Map<EntityType, Integer> getParticipants() {
+            return participants;
         }
 
         public byte[] getNonce() {
@@ -260,6 +275,11 @@ public class Token {
                 outstream.writeInt(nonce.length);
                 outstream.write(nonce);
                 outstream.writeLong(timestamp);
+                outstream.writeInt(participants.size());
+                for (var participant : participants.entrySet()) {
+                    outstream.writeInt(participant.getKey().ordinal());
+                    outstream.writeInt(participant.getValue());
+                }
                 if (includeSignature) {
                     outstream.writeInt(signature.length);
                     outstream.write(signature);
@@ -281,6 +301,14 @@ public class Token {
                 nonce = new byte[nonceLen];
                 instream.read(nonce);
                 timestamp = instream.readLong();
+                var participantSize = instream.readInt();
+                participants = new HashMap<EntityType, Integer>();
+                for (var i = 0; i < participantSize; i++) {
+                    var key = EntityType.values()[instream.readInt()];
+                    var value = instream.readInt();
+                    participants.put(key, value);
+                }
+
                 if (includeSignature) {
                     var signatureLen = instream.readInt();
                     signature = new byte[signatureLen];

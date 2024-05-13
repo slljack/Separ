@@ -35,11 +35,14 @@ public class CryptoUtils {
     private Map<EntityType, GSPublicKey> allGPKs;
     private GSPublicKey myGPK;
     private GSMemberCertificate memberCertificate;
+    Printer printer;
 
     private static PublicKey raPublicKey;
 
     public CryptoUtils(Map<EntityType, GSPublicKey> allGPKs, GSPublicKey myGPK, GSMemberCertificate memberCertificate,
             PublicKey raPublicKey) {
+
+        this.printer = new Printer(null);
         this.allGPKs = allGPKs;
         this.myGPK = myGPK;
         this.memberCertificate = memberCertificate;
@@ -66,6 +69,8 @@ public class CryptoUtils {
     }
 
     public boolean groupVerify(EntityType group, byte[] data, byte[] signature) {
+        printer.info("reached groupVerify");
+
         var engine = getEngine();
         var params = new CGSecurityParameters();
 

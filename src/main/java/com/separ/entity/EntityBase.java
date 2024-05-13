@@ -230,7 +230,7 @@ public abstract class EntityBase extends StateMachineRunner implements EntityInt
                 var constraintTokens = messageTokens.get(constraintId);
                 for (var token : constraintTokens) {
                     allTokens.put(token.getId(), token);
-                    if (token.getPrivateKey() != null) {
+                    if (token.getPublicKey() != null) {
                         budget.addToken(constraintId, token);
                     }
                 }
@@ -290,7 +290,7 @@ public abstract class EntityBase extends StateMachineRunner implements EntityInt
             for (var key : tokens.keySet()) {
                 var token = tokens.get(key);
                 var publicToken = new Token(token);
-                publicToken.setPrivateKey(null);
+                //publicToken.setPrivateKey(null);
                 map.put(key, publicToken);
             }
         }
@@ -308,7 +308,7 @@ public abstract class EntityBase extends StateMachineRunner implements EntityInt
                 var token = allTokens.get(tokenId);
                 if (token != null) {
                     if (crypto.groupVerify(group, token.getBytes(false), signature)) {
-                        printer.info("Verified token #" + tokenId + " signature. (" + group.id() + ")");
+                        printer.info("Verified token #" + tokenId + " signature. (" + group.id() + ") " + token.getPublicKey().getParticipants().toString());
                     } else {
                         printer.error("Failed token #" + tokenId + " signature. (" + group.id() + ")");
                     }

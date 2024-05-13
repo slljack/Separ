@@ -7,7 +7,7 @@ public class PlatformWithNodes {
             System.out.println("Wrong parameter count.");
             return;
         }
-
+        //    3              12                4               0                    2
         int platformCount, nodeCount, nodesPerPlatform, platformStartId, platformEndId;
 
         try {

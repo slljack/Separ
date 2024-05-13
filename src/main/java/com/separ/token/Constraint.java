@@ -90,7 +90,7 @@ public class Constraint {
             if (token.isParticipant(entity)) {
                 var entityToken = new Token(token);
                 if (!token.isInitiator(entity)) {
-                    entityToken.setPrivateKey(null);
+                    //entityToken.setPrivateKey(null);
                 }
                 entityTokens.add(entityToken);
             }
