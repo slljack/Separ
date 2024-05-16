@@ -1,11 +1,11 @@
 {
   "mode": "tokenOnly",
-  "tokenThreads": 6,
+  "tokenThreads": 8,
   "crossPlatformPercent": 20,
   "nodesPerShard": 4,
   "faultyCount": 1,
   "requestIntervalMs": 100,
-  "requestCount": 500,
+  "requestCount": 50,
   "entities": {
     "worker": 4,
     "platform": 3,
